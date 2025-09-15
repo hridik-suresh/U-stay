@@ -2,7 +2,7 @@
 <body>
 
 <div class="container show-container">
-        <div class="row show-row">
+    <div class="row show-row">
         <div class="col show-col-img"><img src="<%=listing.image.url%>" class="show-img" ></div>
         <div class="col show-col-detail">
             <h5><%=listing.title%></h5>
@@ -14,6 +14,28 @@
                 <form method="post" action="/listings/<%=listing._id%>?_method=DELETE"><button class="btn show-dlt">Delete</button></form>
             </div>
         </div>
+    </div>
+    <div>
+        <h4>Leave a Review</h4>
+        <form action="/listings/<%= listing._id%>/reviews" method="post">
+            <div>
+                <label for="rating">Rating</label>
+                <input type="range" min="1" max="5" id="rating" name="review[rating]">
+            </div>
+            <div>
+                <label for="comment">Comments</label>
+                <textarea name="review[comment]"  id="comment"></textarea>
+            </div>
+            <button>Submit</button>
+        </form>
+        <hr>
+        <h4>All Reviews</h4>
+        <ul>
+            <% for(let review of listing.reviews){%>
+                <li><%=review.rating %></li>
+                <li><%=review.comment %></li><hr>
+            <%}%>
+        </ul>
     </div>
 </div>
 

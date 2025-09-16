@@ -103,12 +103,13 @@ app.delete('/listings/:id', wrapAsync(async (req, res, next) =>{
 }))
 
 //-----------------------------------------
-//REVIEWS
+//REVIEWS POST 
 app.post('/listings/:id/reviews', wrapAsync(async (req, res, ) =>{
     let result = reviewSchema.validate(req.body);
     if(result.error){
         throw new ExpressError(400, result.error);
     }
+    
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     await newReview.save();
@@ -118,7 +119,15 @@ app.post('/listings/:id/reviews', wrapAsync(async (req, res, ) =>{
     await listing.save();
 
     console.log('new review saved');
-    res.send('new review saves')
+    res.redirect(`/listings/${req.params.id}`);
+}))
+
+//REVIEW DELETE---------------------------
+app.delete('/listings/:id/reviews/:reviewId', wrapAsync(async (req, res) =>{
+    let {id, reviewId} = req.params;
+    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
 }))
 
 

@@ -1,14 +1,13 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const Listing = require('./models/listing.js');
 const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
-const wrapAsync = require('./utils/wrapAsync.js');
 const ExpressError = require('./utils/ExpressError.js');
-const {listingSchema, reviewSchema} = require("./schema.js");
-const Review = require('./models/review.js');
+
+const listings = require("./routes/listing.js");
+const reviews = require("./routes/review.js")
 
 
 async function main() {
@@ -35,100 +34,10 @@ app.get('/', (req, res) =>{
     res.send("root is working");
 })
 
-//INDEX--READ-----------------------------
-app.get('/listings', wrapAsync(async (req, res, next)=> {
-    let allListings = await Listing.find({});
-    res.render('./listings/index.ejs', {allListings});
-}))
+//routers
+app.use("/listings", listings); 
 
-//NEW CREATION---CREATE-------------------
-app.get('/listings/new', (req, res) =>{
-    res.render('./listings/new.ejs');
-})
-app.post('/listings', wrapAsync(async (req, res, next) =>{
-    // if(!req.body.listing){
-    //     throw new ExpressError(400, 'Send valid data for listinng');
-
-    // }
-    // let listing = req.body.listing;
-    // console.log(listing);
-    let result = listingSchema.validate(req.body);
-    if(result.error){
-        throw new ExpressError(400, result.error);
-    }
-
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect('/listings');
-    
-}))
-
-//SINGLE SHOW----READ-----------------------
-app.get('/listings/:id', wrapAsync(async (req, res, next) =>{
-    let {id} = req.params;
-    let listing = await Listing.findById(id).populate('reviews');
-    // console.log(listing);
-    res.render('./listings/show.ejs', {listing});
-}))
-
-//EDIT AND UPDATE----------------------------
-app.get('/listings/:id/edit',wrapAsync( async (req, res, next) =>{
-    let {id} = req.params;
-    let listing = await Listing.findById(id);
-    res.render('./listings/edit.ejs', {listing});
-}))
-
-app.put('/listings/:id', wrapAsync(async(req,res, next) =>{
-    // if(!req.body.listing){
-    // throw new ExpressError(400, 'Send valid data for listinng');
-
-    // }
-    let result = listingSchema.validate(req.body);
-    if(result.error){
-        throw new ExpressError(400, result.error);
-    }
-    
-    let {id} = req.params;
-    await Listing.findByIdAndUpdate(id, {...req.body.listing});
-    res.redirect(`/listings/${id}`);
-    
-}))
-
-//DELETE----DESTROY-----------------------
-app.delete('/listings/:id', wrapAsync(async (req, res, next) =>{
-    let {id} = req.params;
-    let deletedPost = await Listing.findByIdAndDelete(id);
-    console.log(deletedPost);
-    res.redirect('/listings');
-}))
-
-//-----------------------------------------
-//REVIEWS POST 
-app.post('/listings/:id/reviews', wrapAsync(async (req, res, ) =>{
-    let result = reviewSchema.validate(req.body);
-    if(result.error){
-        throw new ExpressError(400, result.error);
-    }
-    
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-    await newReview.save();
-
-    listing.reviews.push(newReview);
-
-    await listing.save();
-
-    console.log('new review saved');
-    res.redirect(`/listings/${req.params.id}`);
-}))
-
-//REVIEW DELETE---------------------------
-app.delete('/listings/:id/reviews/:reviewId', wrapAsync(async (req, res) =>{
-    let {id, reviewId} = req.params;
-    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/listings/${id}`);
-}))
+app.use("/listings/:id/reviews", reviews);
 
 
 //ERROR HANDLER-------------------------

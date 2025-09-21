@@ -11,8 +11,9 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js")
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js")
+const listingsRouter = require("./routes/listing.js");
+const reviewsRouter = require("./routes/review.js")
+const userRouter = require("./routes/user.js")
 
 
 async function main() {
@@ -60,6 +61,7 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.edit = req.flash("edit");
     res.locals.dlt = req.flash("dlt");
+    res.locals.error = req.flash("error");
     next();
 })
 
@@ -68,9 +70,11 @@ app.get('/', (req, res) =>{
 })
 
 //routers
-app.use("/listings", listings); 
+app.use("/listings", listingsRouter); 
 
-app.use("/listings/:id/reviews", reviews);
+app.use("/listings/:id/reviews", reviewsRouter);
+
+app.use("/", userRouter);
 
 
 //ERROR HANDLER-------------------------
@@ -81,6 +85,7 @@ app.all('/*splat', (req, res, next) =>{
 
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong!" } = err;
+    console.log(message);
     res.status(statusCode).render('./listings/error.ejs', { statusCode });
 });
 

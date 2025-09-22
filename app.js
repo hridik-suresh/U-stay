@@ -62,6 +62,7 @@ app.use((req, res, next) => {
     res.locals.edit = req.flash("edit");
     res.locals.dlt = req.flash("dlt");
     res.locals.error = req.flash("error");
+    res.locals.currentUser = req.user;
     next();
 })
 

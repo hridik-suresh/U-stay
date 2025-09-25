@@ -8,7 +8,7 @@
                 <div class="form-container">
                     <h2 class="form-header text-center">Create a New Listing</h2>
                     
-                    <form  method="post" action="/listings" class="row g-3 needs-validation" novalidate >
+                    <form  method="post" action="/listings" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
                         <!-- Title Field -->
                         <div class="mb-4">
                             <label for="listingTitle" class="form-label">Title <span class="text-danger">*</span></label>
@@ -32,19 +32,9 @@
 
                         <!-- Image Details -->
                         <div class="mb-4">
-                            <label class="form-label">Image Details</label>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="listing[image][filename]" 
-                                           placeholder="Image filename (e.g., product-image.jpg)">
-                                    <div class="form-text">Enter the filename of your image</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="url" class="form-control" name="listing[image][url]" 
-                                           placeholder="Image URL (e.g., https://example.com/image.jpg)">
-                                    <div class="form-text">Provide a direct link to your image</div>
-                                </div>
-                            </div>
+                            <label class="form-label">Image Details</label>                            
+                            <input type="file" class="form-control" name="listing[image]" required>
+                            <div class="form-text">Upload your image</div>                          
                         </div>
 
                         <!-- Price Field -->

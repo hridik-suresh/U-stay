@@ -1,18 +1,5 @@
 <% layout('/layouts/boilerplate.ejs')%>
 
-<!-- <body>
-    <h3>Edit The Listing</h3>
-<form method="post" action="/listings/<%= listing._id%>?_method=PUT">
-    <input type="text" name="listing[title]" value="<%=listing.title%>"><br><br>
-    <textarea name="listing[description]" ><%=listing.description%></textarea><br><br>
-    <input type="text" value="<%=listing.image.filename%>" name="listing[image][filename]">
-    <input type="text" value="<%=listing.image.url%>" name="listing[image][url]"><br><br>
-    <input type="number" name="listing[price]" value="<%=listing.price%>"><br><br>
-    <input type="text" name="listing[location]" value="<%=listing.location%>"><br><br>
-    <input type="text" name="listing[country]" value="<%=listing.country%>">
-    <button>Edit</button>
-</form>
-</body> -->
 
 
 <body>
@@ -22,7 +9,7 @@
                 <div class="form-container">
                     <h2 class="form-header text-center">Edit The Listing</h2>
                     
-                    <form  method="post" class="needs-validation" action="/listings/<%= listing._id%>?_method=PUT" novalidate>
+                    <form  method="post" class="needs-validation" action="/listings/<%= listing._id%>?_method=PUT" novalidate enctype="multipart/form-data">
                         <!-- Title Field -->
                         <div class="mb-4">
                             <label for="listingTitle" class="form-label">Title <span class="text-danger">*</span></label>
@@ -47,18 +34,8 @@
                         <!-- Image Details -->
                         <div class="mb-4">
                             <label class="form-label">Image Details</label>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="listing[image][filename]" value="<%=listing.image.filename%>"
-                                           placeholder="Image filename (e.g., product-image.jpg)">
-                                    <div class="form-text">Enter the filename of your image</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="url" class="form-control" name="listing[image][url]" value="<%=listing.image.url%>"
-                                           placeholder="Image URL (e.g., https://example.com/image.jpg)" required>
-                                    <div class="form-text">Provide a direct link to your image</div>
-                                </div>
-                            </div>
+                            <input type="file" class="form-control" name="listing[image]" >
+                            <div class="form-text">Upload your image</div>
                         </div>
 
                         <!-- Price Field -->

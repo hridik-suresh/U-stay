@@ -87,9 +87,9 @@ app.use((req, res, next) => {
     next();
 })
 
-// app.get('/', (req, res) =>{
-//     res.send("root is working");
-// })
+app.get('/', (req, res) =>{
+    res.redirect("/listings");
+})
 
 //routers
 app.use("/listings", listingsRouter); 
